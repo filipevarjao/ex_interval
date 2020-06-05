@@ -26,7 +26,9 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.new(1.1, 2.5)
     [1.1, 2.5]
   """
-  @spec new(number() | binary(), number() | binary()) :: List
+  @spec new(number() | binary(), number() | binary()) :: list()
+  def new([value1, value2]), do: new(value1, value2)
+
   def new(value) do
     real_number = cast_to_float(value)
     [real_number, real_number]
@@ -50,7 +52,7 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.middle(%ExInterval.Interval{inf: -10.0, sup: 5.0})
     -2.5
   """
-  @spec middle(Interval.t()) :: Float
+  @spec middle(Interval.t() | list()) :: float()
   def middle(%Interval{inf: inf, sup: sup}) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(1)
@@ -58,6 +60,8 @@ defmodule ExInterval.Interval do
     Rounding.set_mode(backup_mode)
     mid
   end
+
+  def middle([inf, sup]), do: middle(%Interval{inf: inf, sup: sup})
 
   @doc """
   Returns true if the value is an element or a subset of the interval
@@ -77,8 +81,13 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.is_member?(0.0, %ExInterval.Interval{inf: 0.1, sup: 1})
     false
   """
-  @spec is_member?(number() | binary() | Interval.t(), number() | binary() | Interval.t()) ::
+  @spec is_member?(
+          number() | binary() | Interval.t(),
+          number() | binary() | list() | Interval.t()
+        ) ::
           boolean()
+  def is_member?(value, [inf, sup]), do: is_member?(value, %Interval{inf: inf, sup: sup})
+
   def is_member?(first, second) do
     [first, second] = operators(first, second)
     contains(first, second)
@@ -99,8 +108,14 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.add("0.1", 0.1)
     [0.2, 0.2]
   """
-  @spec add(number() | binary() | Interval.t(), number() | binary() | Interval.t()) ::
-          Interval.t()
+  @spec add(
+          number() | binary() | Interval.t() | list(),
+          number() | binary() | Interval.t() | list()
+        ) ::
+          list()
+  def add([val1, val2], [val3, val4]),
+    do: add(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+
   def add(first, second) do
     [first, second] = operators(first, second)
     plus(first, second)
@@ -124,8 +139,14 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.sub("0.1", 0.1)
     [0.0, 0.0]
   """
-  @spec sub(number() | binary() | Interval.t(), number() | binary() | Interval.t()) ::
-          Interval.t()
+  @spec sub(
+          number() | binary() | Interval.t() | list(),
+          number() | binary() | Interval.t() | list()
+        ) ::
+          list()
+  def sub([val1, val2], [val3, val4]),
+    do: sub(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+
   def sub(first, second) do
     [first, second] = operators(first, second)
     minus(first, second)
@@ -149,8 +170,14 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.mul(0.2, "0.1")
     [0.02, 0.020000000000000004]
   """
-  @spec mul(number() | binary() | Interval.t(), number() | binary() | Interval.t()) ::
-          Interval.t()
+  @spec mul(
+          number() | binary() | Interval.t() | list(),
+          number() | binary() | Interval.t() | list()
+        ) ::
+          list()
+  def mul([val1, val2], [val3, val4]),
+    do: mul(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+
   def mul(first, second) do
     [first, second] = operators(first, second)
     multiplication(first, second)
@@ -165,20 +192,26 @@ defmodule ExInterval.Interval do
 
   ## Examples
 
-    iex> ExInterval.Interval.div(%ExInterval.Interval{inf: 0.25, sup: 0.5}, %ExInterval.Interval{inf: 2, sup: 4})
+    iex> ExInterval.Interval.division(%ExInterval.Interval{inf: 0.25, sup: 0.5}, %ExInterval.Interval{inf: 2, sup: 4})
     [0.0625, 0.25]
 
-    iex> ExInterval.Interval.div(%ExInterval.Interval{inf: -0.75, sup: 0.75}, 2)
+    iex> ExInterval.Interval.division(%ExInterval.Interval{inf: -0.75, sup: 0.75}, 2)
     [-0.375, 0.375]
 
-    iex> ExInterval.Interval.div("0.1", 0.1)
+    iex> ExInterval.Interval.division("0.1", 0.1)
     [1.0, 1.0]
   """
-  @spec div(number() | binary() | Interval.t(), number() | binary() | Interval.t()) ::
-          Interval.t()
-  def div(first, second) do
+  @spec division(
+          number() | binary() | Interval.t() | list(),
+          number() | binary() | Interval.t() | list()
+        ) ::
+          list()
+  def division([val1, val2], [val3, val4]),
+    do: div(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+
+  def division(first, second) do
     [first, second] = operators(first, second)
-    division(first, second)
+    div_int(first, second)
   end
 
   defp contains(%Interval{inf: x2, sup: y2}, %Interval{inf: x1, sup: y1}) do
@@ -195,7 +228,7 @@ defmodule ExInterval.Interval do
     %Interval{inf: real_number, sup: real_number}
   end
 
-  defp division(%Interval{inf: x1, sup: y1}, %Interval{inf: x2, sup: y2}) do
+  defp div_int(%Interval{inf: x1, sup: y1}, %Interval{inf: x2, sup: y2}) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(-1)
     inf = min(min(x1 / x2, x1 / y2), min(y1 / x2, y1 / y2))
