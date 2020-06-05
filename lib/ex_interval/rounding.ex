@@ -5,7 +5,7 @@ defmodule ExInterval.Rounding do
 
   def init, do: :erlang.load_nif('./rounding', 0)
 
-  def get_mode, do: raise "NIF get_mode/0 not implemented"
+  def get_mode, do: raise("NIF get_mode/0 not implemented")
 
-  def set_mode(_), do: raise "NIF set_mode/0 not implemented"
+  def set_mode(_), do: raise("NIF set_mode/0 not implemented")
 end
