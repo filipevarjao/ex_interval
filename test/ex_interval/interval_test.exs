@@ -12,12 +12,12 @@ defmodule ExInterval.IntervalTest do
     p2 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_down) end)
     p3 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_up) end)
 
-    m1 = Enum.flat_map(Task.await(p2), & &1)
-    m2 = Enum.flat_map(Task.await(p1), & &1)
-    m3 = Enum.flat_map(Task.await(p3), & &1)
+    m1 = Task.await(p2)
+    m2 = Task.await(p1)
+    m3 = Task.await(p3)
 
-    assert Enum.all?(m1, fn item -> Enum.each(m2, fn item2 -> item >= item2 end) end)
-    assert Enum.all?(m1, fn item -> Enum.each(m3, fn item2 -> item < item2 end) end)
+    assert m1 >= m2
+    assert m1 < m3
   end
 
   def benchmark({matrix_a, matrix_b}, mode) do
@@ -42,6 +42,8 @@ defmodule ExInterval.IntervalTest do
       Enum.map(matrix_a, fn row ->
         Enum.map(new_b, &dot_product(row, &1))
       end)
+      |> Enum.flat_map(& &1)
+      |> Enum.sum()
 
     Rounding.set_mode(backup_mode)
     result

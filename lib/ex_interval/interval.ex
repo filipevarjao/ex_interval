@@ -207,11 +207,33 @@ defmodule ExInterval.Interval do
         ) ::
           list()
   def division([val1, val2], [val3, val4]),
-    do: div(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+    do: div_int(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
 
   def division(first, second) do
     [first, second] = operators(first, second)
     div_int(first, second)
+  end
+
+  @doc """
+  Calculates the machine epsilon
+
+  ## Parameters
+
+  - eps/0
+
+  ##
+
+  iex> ExInterval.Interval.eps
+  2.220446049250313e-16
+  """
+  @spec eps() :: number
+  def eps, do: calculate_epsilon(1)
+
+  defp calculate_epsilon(macheps) do
+    case 1.0 + macheps / 2 > 1.0 do
+      true -> calculate_epsilon(macheps / 2)
+      false -> macheps
+    end
   end
 
   defp contains(%Interval{inf: x2, sup: y2}, %Interval{inf: x1, sup: y1}) do
