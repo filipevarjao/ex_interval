@@ -12,9 +12,9 @@ defmodule ExInterval.IntervalTest do
     p2 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_down) end)
     p3 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_up) end)
 
-    m1 = Enum.flat_map(Task.await(p2), &(&1))
-    m2 = Enum.flat_map(Task.await(p1), &(&1))
-    m3 = Enum.flat_map(Task.await(p3), &(&1))
+    m1 = Enum.flat_map(Task.await(p2), & &1)
+    m2 = Enum.flat_map(Task.await(p1), & &1)
+    m3 = Enum.flat_map(Task.await(p3), & &1)
 
     assert Enum.all?(m1, fn item -> Enum.each(m2, fn item2 -> item >= item2 end) end)
     assert Enum.all?(m1, fn item -> Enum.each(m3, fn item2 -> item < item2 end) end)
@@ -22,6 +22,7 @@ defmodule ExInterval.IntervalTest do
 
   def benchmark({matrix_a, matrix_b}, mode) do
     backup_mode = Rounding.get_mode()
+    true = :erlang.yield()
 
     case mode do
       :round_down ->
@@ -34,6 +35,7 @@ defmodule ExInterval.IntervalTest do
         Rounding.set_mode(0)
     end
 
+    true = :erlang.yield()
     new_b = transpose(matrix_b)
 
     result =
