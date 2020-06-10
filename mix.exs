@@ -10,15 +10,20 @@ defmodule ExInterval.MixProject do
       compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      test_coverage: [
-        tool: ExCoveralls
-      ],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ]
+      test_coverage: [tool: ExCoveralls],
+      description: "Interval type and functions for Maximum Accuracy Interval Arithmetic",
+      package: package(),
+      source_url: "https://github.com/filipevarjao/ex_interval"
+    ]
+  end
+
+  defp package() do
+    [
+      files: ~w(lib .formatter.exs mix.exs README.md LICENSE),
+      licenses: ["MIT License"],
+      links: %{
+        "GitHub" => "https://github.com/filipevarjao/ex_interval"
+      }
     ]
   end
 
