@@ -37,7 +37,8 @@ defmodule ExInterval.MixProject do
 
   defp deps do
     [
-      {:excoveralls, "~> 0.9", only: :test}
+      {:excoveralls, "~> 0.9", only: :test},
+      {:ex_doc, "~> 0.22.1", only: :dev, runtime: false}
     ]
   end
 end
