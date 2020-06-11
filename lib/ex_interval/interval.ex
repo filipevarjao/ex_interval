@@ -7,9 +7,9 @@ defmodule ExInterval.Interval do
 
   defstruct inf: nil, sup: nil
 
-  @type t :: %__MODULE__{inf: Float, sup: Float}
+  @type interval :: %__MODULE__{inf: Float, sup: Float}
 
-  alias ExInterval.{Interval, Rounding}
+  alias ExInterval.Rounding
 
   @doc """
   Returns a new Interval
@@ -52,8 +52,8 @@ defmodule ExInterval.Interval do
     iex> ExInterval.Interval.middle(%ExInterval.Interval{inf: -10.0, sup: 5.0})
     -2.5
   """
-  @spec middle(Interval.t() | list()) :: float()
-  def middle(%Interval{inf: inf, sup: sup}) do
+  @spec middle(interval() | list()) :: float()
+  def middle(%__MODULE__{inf: inf, sup: sup}) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(1)
     mid = (inf + sup) / 2.0
@@ -61,7 +61,7 @@ defmodule ExInterval.Interval do
     mid
   end
 
-  def middle([inf, sup]), do: middle(%Interval{inf: inf, sup: sup})
+  def middle([inf, sup]), do: middle(%__MODULE__{inf: inf, sup: sup})
 
   @doc """
   Returns true if the value is an element or a subset of the interval
@@ -82,11 +82,11 @@ defmodule ExInterval.Interval do
     false
   """
   @spec is_member?(
-          number() | binary() | Interval.t(),
-          number() | binary() | list() | Interval.t()
+          number() | binary() | interval(),
+          number() | binary() | list() | interval()
         ) ::
           boolean()
-  def is_member?(value, [inf, sup]), do: is_member?(value, %Interval{inf: inf, sup: sup})
+  def is_member?(value, [inf, sup]), do: is_member?(value, %__MODULE__{inf: inf, sup: sup})
 
   def is_member?(first, second) do
     [first, second] = operators(first, second)
@@ -109,12 +109,12 @@ defmodule ExInterval.Interval do
     [0.2, 0.2]
   """
   @spec add(
-          number() | binary() | Interval.t() | list(),
-          number() | binary() | Interval.t() | list()
+          number() | binary() | interval() | list(),
+          number() | binary() | interval() | list()
         ) ::
           list()
   def add([val1, val2], [val3, val4]),
-    do: add(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+    do: add(%__MODULE__{inf: val1, sup: val2}, %__MODULE__{inf: val3, sup: val4})
 
   def add(first, second) do
     [first, second] = operators(first, second)
@@ -140,12 +140,12 @@ defmodule ExInterval.Interval do
     [0.0, 0.0]
   """
   @spec sub(
-          number() | binary() | Interval.t() | list(),
-          number() | binary() | Interval.t() | list()
+          number() | binary() | interval() | list(),
+          number() | binary() | interval() | list()
         ) ::
           list()
   def sub([val1, val2], [val3, val4]),
-    do: sub(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+    do: sub(%__MODULE__{inf: val1, sup: val2}, %__MODULE__{inf: val3, sup: val4})
 
   def sub(first, second) do
     [first, second] = operators(first, second)
@@ -171,12 +171,12 @@ defmodule ExInterval.Interval do
     [0.02, 0.020000000000000004]
   """
   @spec mul(
-          number() | binary() | Interval.t() | list(),
-          number() | binary() | Interval.t() | list()
+          number() | binary() | interval() | list(),
+          number() | binary() | interval() | list()
         ) ::
           list()
   def mul([val1, val2], [val3, val4]),
-    do: mul(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+    do: mul(%__MODULE__{inf: val1, sup: val2}, %__MODULE__{inf: val3, sup: val4})
 
   def mul(first, second) do
     [first, second] = operators(first, second)
@@ -202,12 +202,12 @@ defmodule ExInterval.Interval do
     [1.0, 1.0]
   """
   @spec division(
-          number() | binary() | Interval.t() | list(),
-          number() | binary() | Interval.t() | list()
+          number() | binary() | interval() | list(),
+          number() | binary() | interval() | list()
         ) ::
           list()
   def division([val1, val2], [val3, val4]),
-    do: div_int(%Interval{inf: val1, sup: val2}, %Interval{inf: val3, sup: val4})
+    do: div_int(%__MODULE__{inf: val1, sup: val2}, %__MODULE__{inf: val3, sup: val4})
 
   def division(first, second) do
     [first, second] = operators(first, second)
@@ -236,21 +236,21 @@ defmodule ExInterval.Interval do
     end
   end
 
-  defp contains(%Interval{inf: x2, sup: y2}, %Interval{inf: x1, sup: y1}) do
+  defp contains(%__MODULE__{inf: x2, sup: y2}, %__MODULE__{inf: x1, sup: y1}) do
     x1 <= x2 and y1 >= y2
   end
 
-  defp operators(%Interval{} = first, %Interval{} = second), do: [first, second]
-  defp operators(%Interval{} = first, second), do: [first, create_interval(second)]
-  defp operators(first, %Interval{} = second), do: [create_interval(first), second]
+  defp operators(%__MODULE__{} = first, %__MODULE__{} = second), do: [first, second]
+  defp operators(%__MODULE__{} = first, second), do: [first, create_interval(second)]
+  defp operators(first, %__MODULE__{} = second), do: [create_interval(first), second]
   defp operators(first, second), do: [create_interval(first), create_interval(second)]
 
   defp create_interval(value) do
     real_number = cast_to_float(value)
-    %Interval{inf: real_number, sup: real_number}
+    %__MODULE__{inf: real_number, sup: real_number}
   end
 
-  defp div_int(%Interval{inf: x1, sup: y1}, %Interval{inf: x2, sup: y2}) do
+  defp div_int(%__MODULE__{inf: x1, sup: y1}, %__MODULE__{inf: x2, sup: y2}) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(-1)
     inf = min(min(x1 / x2, x1 / y2), min(y1 / x2, y1 / y2))
@@ -260,7 +260,7 @@ defmodule ExInterval.Interval do
     new(inf, sup)
   end
 
-  defp multiplication(%Interval{inf: x1, sup: y1}, %Interval{inf: x2, sup: y2}) do
+  defp multiplication(%__MODULE__{inf: x1, sup: y1}, %__MODULE__{inf: x2, sup: y2}) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(-1)
     inf = min(min(x1 * x2, x1 * y2), min(y1 * x2, y1 * y2))
@@ -270,7 +270,7 @@ defmodule ExInterval.Interval do
     new(inf, sup)
   end
 
-  defp minus(%Interval{} = first, %Interval{} = second) do
+  defp minus(%__MODULE__{} = first, %__MODULE__{} = second) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(-1)
     inf = first.inf - second.inf
@@ -280,7 +280,7 @@ defmodule ExInterval.Interval do
     new(inf, sup)
   end
 
-  defp plus(%Interval{} = first, %Interval{} = second) do
+  defp plus(%__MODULE__{} = first, %__MODULE__{} = second) do
     backup_mode = Rounding.get_mode()
     Rounding.set_mode(-1)
     inf = first.inf + second.inf
