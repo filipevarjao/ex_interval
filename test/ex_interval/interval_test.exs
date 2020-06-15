@@ -17,7 +17,7 @@ defmodule ExInterval.IntervalTest do
     m3 = Task.await(p3)
 
     assert m1 >= m2
-    assert m1 < m3
+    assert m2 < m3
   end
 
   def benchmark({matrix_a, matrix_b}, mode) do
