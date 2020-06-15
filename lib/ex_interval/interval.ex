@@ -221,7 +221,7 @@ defmodule ExInterval.Interval do
 
   - eps/0
 
-  ##
+  ## Examples
 
   iex> ExInterval.Interval.eps
   2.220446049250313e-16
@@ -235,6 +235,48 @@ defmodule ExInterval.Interval do
       false -> macheps
     end
   end
+
+  @doc """
+  Calculates the absolute value of the interval
+
+  ## Parameters
+
+  - absolute/1
+
+  ## Examples
+
+  iex> ExInterval.Interval.absolute([-1, 1])
+  1.0
+  """
+  @spec absolute(interval() | list()) :: number()
+  def absolute(%__MODULE__{inf: inf, sup: sup}) do
+    max(abs(cast_to_float(inf)), abs(cast_to_float(sup)))
+  end
+
+  def absolute([inf, sup]), do: absolute(%__MODULE__{inf: inf, sup: sup})
+
+  @doc """
+  Returns the distance between supremum and infimum of the interval
+
+  ## Parameters
+
+  - diameter/1
+
+  ## Examples
+
+  iex> ExInterval.Interval.diameter([-10, 1])
+  11.0
+  """
+  @spec diameter(interval() | list()) :: number()
+  def diameter(%__MODULE__{inf: inf, sup: sup}) do
+    rounding_mode_backup = Rounding.get_mode()
+    Rounding.set_mode(1)
+    diameter = cast_to_float(sup) - cast_to_float(inf)
+    Rounding.set_mode(rounding_mode_backup)
+    diameter
+  end
+
+  def diameter([inf, sup]), do: diameter(%__MODULE__{inf: inf, sup: sup})
 
   defp contains(%__MODULE__{inf: x2, sup: y2}, %__MODULE__{inf: x1, sup: y1}) do
     x1 <= x2 and y1 >= y2
