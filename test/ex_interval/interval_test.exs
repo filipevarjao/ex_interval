@@ -12,8 +12,8 @@ defmodule ExInterval.IntervalTest do
     p2 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_down) end)
     p3 = Task.async(fn -> benchmark({matrix_a, matrix_b}, :round_up) end)
 
-    m1 = Task.await(p2)
-    m2 = Task.await(p1)
+    m1 = Task.await(p1)
+    m2 = Task.await(p2)
     m3 = Task.await(p3)
 
     assert m1 >= m2
