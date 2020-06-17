@@ -46,10 +46,10 @@ iex> Interval.add("0.1", 0.1)
 iex> Interval.add([0.25, 0.5], [2.0, 2.0])
 [2.25, 2.5]
 ```
-Similarly, it provides minus, multiplication, and division operators.
+Similarly, it provides minus (**sub**), multiplication (**mul**), and division (**division**) operators.
 
 ## Helpers
-eps/0, is_member?/2, middle/1
+eps/0, is_member?/2, middle/1, absolute/1, diameter/1
 ```
 iex> eps = Interval.eps
 2.220446049250313e-16
@@ -57,6 +57,10 @@ iex> Interval.is_member?(eps, [0.0, 0.1])
 true
 iex> Interval.middle([0.0, 0.1])
 0.05
+iex> Interval.absolute([-1, 1])
+1.0
+iex> Interval.diameter([0.0, 0.1])
+0.1
 ```
 ## Rounding
 The error control is done by directed rounding for the interval operations, we also
