@@ -188,7 +188,7 @@ defmodule ExInterval.Interval do
 
   ## Parameters
 
-   - div/2
+   - division/2
 
   ## Examples
 
