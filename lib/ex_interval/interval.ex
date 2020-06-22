@@ -278,6 +278,33 @@ defmodule ExInterval.Interval do
 
   def diameter([inf, sup]), do: diameter(%__MODULE__{inf: inf, sup: sup})
 
+  @doc """
+  Return the square root of the interval
+
+  ## Parameters
+
+  - sqrt/1
+
+  ## Examples
+
+  iex> ExInterval.Interval.sqrt([9, 25])
+  [3.0, 5.0]
+  """
+  @spec sqrt(interval() | list()) :: interval()
+  def sqrt(%__MODULE__{inf: inf, sup: sup}) do
+    backup_mode = Rounding.get_mode()
+    Rounding.set_mode(-1)
+    inf = :math.sqrt(inf)
+    Rounding.set_mode(1)
+    sup = :math.sqrt(sup)
+    Rounding.set_mode(backup_mode)
+    new(inf, sup)
+  end
+
+  def sqrt([inf, sup]), do: sqrt(%__MODULE__{inf: inf, sup: sup})
+
+  ## private
+
   defp contains(%__MODULE__{inf: x2, sup: y2}, %__MODULE__{inf: x1, sup: y1}) do
     x1 <= x2 and y1 >= y2
   end
