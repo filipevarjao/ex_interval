@@ -4,7 +4,7 @@ defmodule ExInterval.MixProject do
   def project do
     [
       app: :ex_interval,
-      version: "0.1.0",
+      version: "0.1.3",
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: Mix.compilers() ++ [:ex_interval],
