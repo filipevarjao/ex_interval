@@ -1,7 +1,7 @@
 .PHONY: all
 
-ERL_INCLUDE_PATH="/home/filipe/.asdf/installs/erlang/22.1.2/erts-10.5.2/include/"
+ERL_INCLUDE_PATH=$(shell erl -eval 'io:format("~s", [lists:concat([code:root_dir(), "/erts-", erlang:system_info(version), "/include"])])' -s init stop -noshell)
 all: priv/rounding.so
 
-priv/rounding.so: rounding.c
-	gcc -fPIC -shared -o rounding.so rounding.c -I$(ERL_INCLUDE_PATH)
+priv/rounding.so: src/rounding.c
+	gcc -fPIC -shared -o rounding.so src/rounding.c -I$(ERL_INCLUDE_PATH)
