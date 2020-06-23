@@ -19,7 +19,7 @@ defmodule ExInterval.MixProject do
 
   defp package() do
     [
-      files: ~w(lib .formatter.exs mix.exs README.md LICENSE),
+      files: ~w(lib src Makefile .formatter.exs mix.exs README.md LICENSE),
       licenses: ["MIT License"],
       links: %{
         "GitHub" => "https://github.com/filipevarjao/ex_interval"
