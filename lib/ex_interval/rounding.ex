@@ -4,10 +4,11 @@ defmodule ExInterval.Rounding do
   status flags affecting the outcomes of some floating-point operations.
   """
   @on_load :load_nifs
+  @path :code.priv_dir(:ex_interval)
 
-  def load_nifs, do: :erlang.load_nif('./rounding', 0)
+  def load_nifs, do: :erlang.load_nif(Path.join(@path, "rounding"), 0)
 
-  def init, do: :erlang.load_nif('./rounding', 0)
+  def init, do: :erlang.load_nif(Path.join(@path, "rounding"), 0)
 
   @doc """
   Gets the status of the floating-point environment
