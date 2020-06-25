@@ -25,11 +25,14 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/ex_interval](https://hexdocs.pm/ex_interval).
 
+<<<<<<< Updated upstream
 ## Dependencies
 The header **<fenv.h>** supports the intended model of use for the floating-point
 environment. It was defined in C99, and describe the handling of floating-point
 rounding and exceptions (overflow, zero-divide, etc.).
 
+=======
+>>>>>>> Stashed changes
 ## Interval
 It implements the interval type.
 ```
