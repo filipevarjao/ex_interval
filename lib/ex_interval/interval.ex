@@ -55,9 +55,9 @@ defmodule ExInterval.Interval do
   @spec middle(interval() | list()) :: float()
   def middle(%__MODULE__{inf: inf, sup: sup}) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     mid = (inf + sup) / 2.0
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     mid
   end
 
@@ -270,9 +270,9 @@ defmodule ExInterval.Interval do
   @spec diameter(interval() | list()) :: number()
   def diameter(%__MODULE__{inf: inf, sup: sup}) do
     rounding_mode_backup = Rounding.get_mode()
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     diameter = cast_to_float(sup) - cast_to_float(inf)
-    Rounding.set_mode(rounding_mode_backup)
+    Rounding.restore_mode(rounding_mode_backup)
     diameter
   end
 
@@ -293,11 +293,11 @@ defmodule ExInterval.Interval do
   @spec sqrt(interval() | list()) :: interval()
   def sqrt(%__MODULE__{inf: inf, sup: sup}) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(-1)
+    Rounding.set_mode_downward()
     inf = :math.sqrt(inf)
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     sup = :math.sqrt(sup)
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     new(inf, sup)
   end
 
@@ -321,41 +321,41 @@ defmodule ExInterval.Interval do
 
   defp div_int(%__MODULE__{inf: x1, sup: y1}, %__MODULE__{inf: x2, sup: y2}) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(-1)
+    Rounding.set_mode_downward()
     inf = min(min(x1 / x2, x1 / y2), min(y1 / x2, y1 / y2))
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     sup = max(max(x1 / x2, x1 / y2), max(y1 / x2, y1 / y2))
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     new(inf, sup)
   end
 
   defp multiplication(%__MODULE__{inf: x1, sup: y1}, %__MODULE__{inf: x2, sup: y2}) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(-1)
+    Rounding.set_mode_downward()
     inf = min(min(x1 * x2, x1 * y2), min(y1 * x2, y1 * y2))
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     sup = max(max(x1 * x2, x1 * y2), max(y1 * x2, y1 * y2))
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     new(inf, sup)
   end
 
   defp minus(%__MODULE__{} = first, %__MODULE__{} = second) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(-1)
+    Rounding.set_mode_downward()
     inf = first.inf - second.inf
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     sup = first.sup - second.sup
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     new(inf, sup)
   end
 
   defp plus(%__MODULE__{} = first, %__MODULE__{} = second) do
     backup_mode = Rounding.get_mode()
-    Rounding.set_mode(-1)
+    Rounding.set_mode_downward()
     inf = first.inf + second.inf
-    Rounding.set_mode(1)
+    Rounding.set_mode_upward()
     sup = first.sup + second.sup
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     new(inf, sup)
   end
 

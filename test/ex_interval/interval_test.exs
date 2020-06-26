@@ -26,13 +26,13 @@ defmodule ExInterval.IntervalTest do
 
     case mode do
       :round_down ->
-        Rounding.set_mode(-1)
+        Rounding.set_mode_downward()
 
       :round_up ->
-        Rounding.set_mode(1)
+        Rounding.set_mode_upward()
 
       _ ->
-        Rounding.set_mode(0)
+        Rounding.set_mode_to_nearest()
     end
 
     true = :erlang.yield()
@@ -45,7 +45,7 @@ defmodule ExInterval.IntervalTest do
       |> Enum.flat_map(& &1)
       |> Enum.sum()
 
-    Rounding.set_mode(backup_mode)
+    Rounding.restore_mode(backup_mode)
     result
   end
 
