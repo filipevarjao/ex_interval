@@ -1,4 +1,4 @@
-defmodule MyApp.BundlexProject do
+defmodule ExInterval.BundlexProject do
   use Bundlex.Project
 
   def project() do
@@ -37,4 +37,5 @@ defmodule MyApp.BundlexProject do
   defp libs() do
     []
   end
+
 end
