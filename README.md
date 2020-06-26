@@ -73,18 +73,19 @@ can use Rounding helper functions.
 ```
 iex> backup_mode = Rounding.get_mode()
 0
-iex> Rounding.set_mode(-1)
+iex> Rounding.set_mode_downward()
 0
 iex> 1/3                             
 0.3333333333333333
-iex> Rounding.set_mode(1) 
+iex> Rounding.set_mode_upward() 
 0
 iex> 1/3                             
 0.33333333333333337
-iex> Rounding.set_mode(backup_mode)
+iex> Rounding.restore_mode(backup_mode)
 0
 ```
 *_It does not guarantee is preemption safe_.
+
 ## References
 
 [1] Moore, R. E., Interval Analysis. Prentice-Hall, Englewood Cliffs, New Jersey, 1966.
