@@ -5,7 +5,7 @@ defmodule ExInterval.MixProject do
     [
       app: :ex_interval,
       version: "0.1.3",
-      elixir: "~> 1.10",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:bundlex|Mix.compilers],
       start_permanent: Mix.env() == :prod,
@@ -37,7 +37,7 @@ defmodule ExInterval.MixProject do
 
   defp deps do
     [
-      {:bundlex, "~> 0.3.0"},
+      {:bundlex, "~> 1.1.0"},
       {:excoveralls, "~> 0.9", only: :test},
       {:ex_doc, "~> 0.22.1", only: :dev, runtime: false}
     ]

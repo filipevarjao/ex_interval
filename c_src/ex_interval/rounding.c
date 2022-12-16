@@ -9,11 +9,14 @@
 /* NIF library code */
 static ERL_NIF_TERM get_mode(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
+    (void)argv;
     return enif_make_int(env, fegetround());
 }
 
 static ERL_NIF_TERM restore_mode(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
     int rounding_mode = 0;
     enif_get_int(env, argv[0], &rounding_mode);
     fesetround(rounding_mode);
@@ -22,28 +25,33 @@ static ERL_NIF_TERM restore_mode(ErlNifEnv *env, int argc, const ERL_NIF_TERM ar
 
 static ERL_NIF_TERM set_mode_to_nearest(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
+    (void)argv;
     fesetround(FE_TONEAREST);
     return enif_make_int(env, 0);
 }
 
 static ERL_NIF_TERM set_mode_downward(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
+    (void)argv;
     fesetround(FE_DOWNWARD);
-
     return enif_make_int(env, 0);
 }
 
 static ERL_NIF_TERM set_mode_upward(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
+    (void)argv;
     fesetround(FE_UPWARD);
-
     return enif_make_int(env, 0);
 }
 
 static ERL_NIF_TERM set_mode_toward_zero(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
+    (void)argc;
+    (void)argv;
     fesetround(FE_TOWARDZERO);
-
     return enif_make_int(env, 0);
 }
 

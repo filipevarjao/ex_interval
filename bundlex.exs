@@ -3,35 +3,19 @@ defmodule ExInterval.BundlexProject do
 
   def project() do
     [
-      nifs: nifs(Bundlex.platform()),
-      cnodes: cnodes(),
+      natives: natives(Bundlex.platform()),
       libs: libs(),
-      ports: ports()
     ]
   end
 
-  #  defp nifs(:linux) do
-  #    [
-  #      rounding: [
-  #        sources: ["rounding.c"]
-  #      ]
-  #    ]
-  #  end
-
-  defp nifs(_platform) do
+  defp natives(_platform) do
     [
       rounding: [
-        sources: ["rounding.c"]
+        sources: ["rounding.c"],
+        interface: :nif,
+        compiler_flags: ["-Wno-missing-field-initializers"]
       ]
     ]
-  end
-
-  defp cnodes() do
-    []
-  end
-
-  defp ports() do
-    []
   end
 
   defp libs() do
